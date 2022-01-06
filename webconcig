@@ -1,0 +1,13 @@
+
+<configuration>
+
+    <system.web>
+      <compilation debug="true" targetFramework="4.5.2" />
+      <httpRuntime targetFramework="4.5.2" />
+    </system.web>
+  
+
+  <connectionStrings>
+    <add name="DataBase" connectionString="Data Source=DESKTOP-MPUJMRR\SQLEXPRESS;Integrated Security=true;Initial Catalog=ModernCollege" providerName="System.Data.SqlClient" />
+  </connectionStrings>
+</configuration>
