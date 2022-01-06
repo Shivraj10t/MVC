@@ -1,0 +1,72 @@
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script>
+    $(document).ready(function () {
+        debugger
+        BindCountryList();
+        try {
+            setTimeout(function () {
+              
+
+            }, 1000)
+
+        } catch (e) {
+
+        }
+
+
+    })
+    **************************************************
+    function BindStateList() {
+    debugger
+        var Countryid = $("#ddlCountry").val();
+        $.post("/CityMaster/BindStateList", { countryid: Countryid }, function (data) {
+            var json = JSON.parse(data);
+            $("#ddlState").empty().append('<option  value="0">Select State</option>');
+            $(json.Table).each(function (i) {
+
+
+                $("#ddlState").append('<option  value="' + json.Table[i].stateId + '">' + json.Table[i].StateName + '</option>');
+            });
+
+            var mode = $("#mode").val();
+            if (mode == "Edit") {
+                var stateid = $("#hfStateId").val();
+                $(json.Table).each(function (i) {
+                    if (json.Table[i].stateId = stateid) {
+                        $("#ddlState").val(stateid);
+                    }
+                });
+                $("#ddlState").trigger('onchange');
+            }
+        });
+    }
+    ******************************************
+    function BindCountryList() {
+       
+        $.post("/CityMaster/BildCountryList", function (data) {
+            var json = JSON.parse(data);
+
+
+            $("#ddlCountry").empty().append('<option  value="0">Select Country</option>');
+
+            $(json.Table).each(function (i) {
+
+
+                $("#ddlCountry").append('<option  value="' + json.Table[i].countryId + '">' + json.Table[i].country + '</option>');
+            })
+
+            var mode = $("#mode").val();
+            if (mode == "Edit") {
+                var countryid = $("#hfCountryId").val();
+                $(json.Table).each(function (i) {
+                    if (json.Table[i].CountryId = countryid) {
+                        $("#ddlCountry").val(countryid);
+                    }
+                });
+                $("#ddlCountry").trigger('onchange');
+            }
+
+        });
+
+    }
+</script>
