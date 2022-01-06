@@ -1,4 +1,28 @@
-   function BindStateList() {
+  Controller
+  **********************************************************
+       string json = string.Empty;
+        public   JsonResult BildCountryList()
+        {
+            DataSet ds = new DataSet();
+
+            SqlCommand cmd = new SqlCommand("Pro_Country",con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.Clear();
+            cmd.Parameters.AddWithValue("@mode", 1);
+            SqlDataAdapter da = new SqlDataAdapter();
+            da.SelectCommand = cmd;
+            da.Fill(ds);
+            json = JsonConvert.SerializeObject(ds);
+            return Json(json, JsonRequestBehavior.AllowGet);
+
+        }
+  ********************************************************************
+  
+  
+  ---------------------------------------
+  JQUERY
+  *************************************
+  function BindStateList() {
     debugger
         var Countryid = $("#ddlCountry").val();
         $.post("/CityMaster/BindStateList", { countryid: Countryid }, function (data) {
