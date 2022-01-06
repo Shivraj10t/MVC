@@ -1,0 +1,178 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using System.Data;
+using System.Data.SqlClient;
+using System.Configuration;
+using Newtonsoft.Json;
+
+namespace MVCTEST.Controllers
+{
+    public class CityMasterController : Controller
+    {
+
+        SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["DBConnection"].ToString());
+        // GET: CityMaster
+        public ActionResult Index()
+        {
+
+            DataSet ds = new DataSet();
+            try
+            {
+                SqlCommand cmd = new SqlCommand("Pro_City", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.Clear();
+
+                cmd.Parameters.AddWithValue("@mode", 1);
+
+                SqlDataAdapter da = new SqlDataAdapter();
+
+                da.SelectCommand = cmd;
+                da.Fill(ds);
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return View(ds);
+        }
+
+        public ActionResult AddCity(string mode,string  cityId)
+        {
+            DataSet ds = new DataSet();
+            if (mode == "Edit") 
+            {
+                SqlCommand cmd = new SqlCommand("Pro_City", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Clear();
+                cmd.Parameters.AddWithValue("@mode",6);
+                cmd.Parameters.AddWithValue("@CityId", cityId);
+                SqlDataAdapter da = new SqlDataAdapter();
+                da.SelectCommand = cmd;
+                da.Fill(ds);
+             
+                ViewBag.modeType = "Edit";
+                return View(ds);
+
+            }
+            else
+            {
+                SqlCommand cmd = new SqlCommand("Pro_City", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Clear();
+                cmd.Parameters.AddWithValue("@mode", 5);
+              
+                SqlDataAdapter da = new SqlDataAdapter();
+                da.SelectCommand = cmd;
+                da.Fill(ds);
+                ViewBag.modeType = "insert";
+                ViewBag.CityId = ds.Tables[0].Rows[0][0];
+                return View();
+            }
+
+
+          
+        }
+        string json = string.Empty;
+        public   JsonResult BildCountryList()
+        {
+            DataSet ds = new DataSet();
+
+            SqlCommand cmd = new SqlCommand("Pro_Country",con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.Clear();
+            cmd.Parameters.AddWithValue("@mode", 1);
+            SqlDataAdapter da = new SqlDataAdapter();
+            da.SelectCommand = cmd;
+            da.Fill(ds);
+            json = JsonConvert.SerializeObject(ds);
+            return Json(json, JsonRequestBehavior.AllowGet);
+
+        }
+
+        //Get Data For Dropdownlist By CountryId
+        public JsonResult BindStateList(string countryid)
+        {
+           
+                DataSet ds = new DataSet();
+                SqlCommand cmd = new SqlCommand("Pro_State", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Clear();
+
+                cmd.Parameters.AddWithValue("@countryId", countryid);
+                cmd.Parameters.AddWithValue("@mode", 7);
+                SqlDataAdapter da = new SqlDataAdapter();
+                da.SelectCommand = cmd;
+                da.Fill(ds);
+
+            json = JsonConvert.SerializeObject(ds);
+            return Json(json, JsonRequestBehavior.AllowGet);
+
+        }
+        public string InsertData(string CountryId,string StateId,string CityId, string City, string mode)
+        {
+
+
+            if (mode == "Edit")
+            {
+
+
+                SqlCommand cmd = new SqlCommand("Pro_City", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Clear();
+
+                cmd.Parameters.AddWithValue("@CityId", CityId);
+                cmd.Parameters.AddWithValue("@CountryId", CountryId);
+                cmd.Parameters.AddWithValue("@StateId", StateId);
+                cmd.Parameters.AddWithValue("@CityName", City);
+                cmd.Parameters.AddWithValue("mode", 3);
+
+                SqlDataAdapter da = new SqlDataAdapter();
+                DataSet ds = new DataSet();
+                da.SelectCommand = cmd;
+                da.Fill(ds);
+                return "Upadte";
+
+            }
+            else
+            {
+                SqlCommand cmd = new SqlCommand("Pro_City", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Clear();
+
+
+                cmd.Parameters.AddWithValue("@CountryId", CountryId);
+                cmd.Parameters.AddWithValue("@StateId", StateId);
+                cmd.Parameters.AddWithValue("@CityName", City);
+                cmd.Parameters.AddWithValue("mode", 2);
+                SqlDataAdapter da = new SqlDataAdapter();
+                DataSet ds = new DataSet();
+                da.SelectCommand = cmd;
+                da.Fill(ds);
+                return "Save";
+            }
+              
+
+           
+            
+        }
+
+
+        public void DeleteData(string CityId)
+        {
+            DataSet ds = new DataSet();
+            SqlCommand cmd = new SqlCommand("Pro_City", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.Clear();
+
+            cmd.Parameters.AddWithValue("@CityId", CityId);
+            cmd.Parameters.AddWithValue("@mode", 4);
+            SqlDataAdapter da = new SqlDataAdapter();
+            da.SelectCommand = cmd;
+            da.Fill(ds);
+        }
+    }
+}
