@@ -1,4 +1,4 @@
-  Controller
+  Controller ***NORMAL**
   **********************************************************
        string json = string.Empty;
         public   JsonResult BildCountryList()
@@ -17,7 +17,25 @@
 
         }
   ********************************************************************
-  
+      public JsonResult BindStateList(string countryid)
+        {
+           
+                DataSet ds = new DataSet();
+                SqlCommand cmd = new SqlCommand("Pro_State", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Clear();
+
+                cmd.Parameters.AddWithValue("@countryId", countryid);
+                cmd.Parameters.AddWithValue("@mode", 7);
+                SqlDataAdapter da = new SqlDataAdapter();
+                da.SelectCommand = cmd;
+                da.Fill(ds);
+
+            json = JsonConvert.SerializeObject(ds);
+            return Json(json, JsonRequestBehavior.AllowGet);
+
+        }
+        **************************************************************************///////////////////************
   
   ---------------------------------------
   JQUERY
