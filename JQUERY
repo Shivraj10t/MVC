@@ -69,4 +69,33 @@
         });
 
     }
+    
+    
+    function Add() {  
+    var res = validate();  
+    if (res == false) {  
+        return false;  
+    }  
+    var empObj = {  
+        EmployeeID: $('#EmployeeID').val(),  
+        Name: $('#Name').val(),  
+        Age: $('#Age').val(),  
+        State: $('#State').val(),  
+        Country: $('#Country').val()  
+    };  
+    $.ajax({  
+        url: "/Home/Add",  
+        data: JSON.stringify(empObj),  
+        type: "POST",  
+        contentType: "application/json;charset=utf-8",  
+        dataType: "json",  
+        success: function (result) {  
+            loadData();  
+            $('#myModal').modal('hide');  
+        },  
+        error: function (errormessage) {  
+            alert(errormessage.responseText);  
+        }  
+    });  
+}  
 </script>
